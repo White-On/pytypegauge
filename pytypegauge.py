@@ -6,12 +6,10 @@ import re
 import subprocess
 import argparse
 
-from rich.console import Console
 from rich.progress import Progress
-from rich.markdown import Markdown
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Analyse le typage du code python dans un répertoire spécifié"
     )
@@ -144,40 +142,11 @@ def main():
     if python_file_paths == []:
         raise FileNotFoundError("No python file found in the specified directory")
 
-    # number_total_args = 0
-    # number_total_typed_args = 0
-
-    # with Progress() as progress:
-    #     task = progress.add_task("[green]Analyzing python files...", total=len(python_file_paths))
-    #     for python_file_path in python_file_paths:
-    #         # progress bar update
-    #         progress.update(task, advance=1)
-    #         # progress.tasks[task].description = f"Analyzing {python_file_path.name}"
-
-    #         python_code = python_file_path.read_text(errors='ignore')
-    #         functions = extract_function_from_code(python_code)
-    #         dataframe = pd.DataFrame(functions)
-    #         if dataframe.empty:
-    #             # some files may not have any function like __init__.py
-    #             # print(f"No function in {python_file_path.name}")
-    #             continue
-    #         dataframe["number of typed args"] = dataframe["typed_args"].apply(lambda x: sum(x))
-    #         dataframe["number of args"] = dataframe["args"].apply(lambda x: len(x))
-    #         # total_percent = dataframe["number of typed args"].sum() / dataframe["number of args"].sum()
-    #         # print(f"Total percent of typed arguments in {python_file_path.name}: {total_percent:.2%}")
-    #         number_total_args += dataframe["number of args"].sum()
-    #         number_total_typed_args += dataframe["number of typed args"].sum()
-
-    # total_percent = number_total_typed_args / number_total_args
-
     df = get_percent_typed_args(*python_file_paths, progress_bar=True)
     total_percent = df["number of typed args"].sum() / df["number of args"].sum()
     print(f"Total percent of typed arguments in all python files: {total_percent:.2%}")
     markdown_element = f"![Progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
     print(markdown_element)
-    console = Console()
-    md = Markdown(markdown_element)
-    console.print(md)
 
 
 if __name__ == "__main__":
