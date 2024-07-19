@@ -108,7 +108,6 @@ def get_percent_typed_args(*python_file_paths, progress_bar=False):
                 # progress bar update
                 progress.update(task, advance=1)
                 # progress.tasks[task].description = f"Analyzing {python_file_path.name}"
-
             python_code = python_file_path.read_text(errors="ignore")
             functions = extract_function_from_code(python_code)
             dataframe = pd.DataFrame(functions)
