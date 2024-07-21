@@ -32,8 +32,8 @@ print(report)
 ## TODO:
 
 - [x] Add hooks for pre-commit
-- [ ] Add a description of the project
-- [ ] Add a list of the project's dependencies in setup.py
+- [x] Add a description of the project
+- [x] Add a list of the project's dependencies in setup.py
 - [ ] Fix bugs in the project
 - [ ] add tests for the project
 - [ ] Add the feature with pandas and matplotlib

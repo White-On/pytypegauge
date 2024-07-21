@@ -25,7 +25,9 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "rich>=13.7.1",
-        "matplotlib>=3.9.1" "numpy>=2.0.0" "pandas>=2.2.2",
+        "matplotlib>=3.9.1",
+        "numpy>=2.0.0",
+        "pandas>=2.2.2",
     ],
     extras_require={
         "dev": [
