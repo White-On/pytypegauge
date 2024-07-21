@@ -1,0 +1,6 @@
+-   id: pytypegauge
+    name: pytypegauge
+    entry: typegauge
+    description: "Calculate type coverage of your Python code"
+    language: python
+    types: [text]

@@ -23,10 +23,15 @@ setup(
     package_dir={"": "pytypegauge"},
     packages=find_packages(where="pytypegauge"),
     python_requires=">=3.8",
-    install_requires=[],
+    install_requires=[
+        "rich>=13.7.1",
+        "matplotlib>=3.9.1" "numpy>=2.0.0" "pandas>=2.2.2",
+    ],
     extras_require={
         "dev": [
             "twine>=4.0.2",
+            "pytest>=8.3.1",
+            "pre-commit>=3.7.1",
         ],
     },
 )
