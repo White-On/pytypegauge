@@ -2,3 +2,5 @@ rich
 matplotlib
 pandas
 numpy
+pre-commit
+pytest
