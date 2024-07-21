@@ -17,14 +17,13 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "typegauge = typegauge:main", 
+            "typegauge = typegauge:main",
         ]
     },
     package_dir={"": "pytypegauge"},
     packages=find_packages(where="pytypegauge"),
     python_requires=">=3.8",
-    install_requires=[
-    ],
+    install_requires=[],
     extras_require={
         "dev": [
             "twine>=4.0.2",
