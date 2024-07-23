@@ -12,6 +12,8 @@ PyTypeGauge is a Python library that provides comprehensive statistics and metri
 
 To install PyTypeGauge, run:
 
+**⚠️ Note:** PyTypeGauge is not yet available on PyPI.
+
 ```bash
 pip install pytypegauge
 ```
@@ -19,15 +21,16 @@ pip install pytypegauge
 ## Usage
 Here's a simple example of how to use PyTypeGauge:
 
-```python
-from pytypegauge import analyze_type_coverage
-
-def example_function(a: int, b: int) -> int:
-    return a + b
-
-report = analyze_type_coverage(example_function)
-print(report)
+```bash
+pytypegauge [directory] [options]
 ```
+
+for more information, run:
+
+```bash
+pytypegauge --help
+```
+
 
 ## TODO:
 
