@@ -55,7 +55,11 @@ def extract_args_from_function(args):
     """
     Only keep the name of the arguments
     """
-    return [arg.split(":")[0].strip() for arg in args.split(",")]
+    splited_args = [arg.split(":")[0].strip() for arg in args.split(",")]
+    arg_empty = splited_args == [""]
+    if arg_empty:
+        return []
+    return splited_args
 
 
 def extract_return_from_function(return_type):
@@ -71,9 +75,9 @@ def extract_function_from_code(code):
     for match in matches:
         function = {}
         function["name"] = match[0]
-        function["args"] = extract_args_from_function(match[1])
-        function["return"] = extract_return_from_function(match[2])
-        function["typed_args"] = list(map(is_arg_typed, match[1].split(",")))
+        function["args"] = extract_args_from_function(match[1]) if match[1] != "" else []
+        function["return"] = extract_return_from_function(match[2]) if match[2] != "" else "<no-return>"
+        function["typed_args"] = list(map(is_arg_typed, match[1].split(","))) if match[1] != "" else []
         functions.append(function)
     return functions
 
