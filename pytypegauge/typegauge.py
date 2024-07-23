@@ -31,8 +31,9 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-csv",
         "--csv-output",
-        action="store_true",
-        help="Sauvegarde les résultats dans un fichier csv",
+        type=str,
+        help="Nom du fichier CSV pour sauvegarder les résultats",
+        default=None,
     )
     parser.add_argument(
         "-md",
@@ -119,8 +120,6 @@ def get_percent_typed_args(*python_file_paths, progress_bar=False):
                 lambda x: sum(x)
             )
             dataframe["number of args"] = dataframe["args"].apply(lambda x: len(x))
-            # total_percent = dataframe["number of typed args"].sum() / dataframe["number of args"].sum()
-            # print(f"Total percent of typed arguments in {python_file_path.name}: {total_percent:.2%}")
             data_frames.append(dataframe)
 
     return pd.concat(data_frames)
@@ -143,9 +142,19 @@ def main():
 
     df = get_percent_typed_args(*python_file_paths, progress_bar=True)
     total_percent = df["number of typed args"].sum() / df["number of args"].sum()
-    print(f"Total percent of typed arguments in all python files: {total_percent:.2%}")
-    markdown_element = f"![Progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
-    print(markdown_element)
+    output = f"Total percent of typed arguments in all python files: {total_percent:.2%}"
+    if args.markdown_output:
+        markdown_element = f"![Progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
+        output = markdown_element
+    if args.clean_output:
+        output = total_percent
+    if args.csv_output:
+        df.to_csv(args.csv_output)
+    if args.plot_output:
+        plt.bar(df["name"], df["number of typed args"] / df["number of args"])
+        plt.xticks(rotation=90)
+        plt.show()
+    print(output)
 
 
 if __name__ == "__main__":
