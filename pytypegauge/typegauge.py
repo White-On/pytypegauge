@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import re
+import contextlib
 import subprocess
 import argparse
 
@@ -59,7 +60,7 @@ def extract_args_from_function(args):
 
 def extract_return_from_function(return_type):
     if return_type == "":
-        return None
+        return "<no-return>"
     return return_type.strip()
 
 
@@ -99,7 +100,8 @@ def get_git_files(directory):
 def get_percent_typed_args(*python_file_paths, progress_bar=False):
     data_frames = []
 
-    with Progress() as progress:
+    progress_context = Progress() if progress_bar else contextlib.nullcontext()
+    with progress_context as progress:
         if progress_bar:
             task = progress.add_task(
                 "[green]Analyzing python files...", total=len(python_file_paths)
@@ -119,6 +121,7 @@ def get_percent_typed_args(*python_file_paths, progress_bar=False):
             dataframe["number of typed args"] = dataframe["typed_args"].apply(
                 lambda x: sum(x)
             )
+            dataframe["file"] = python_file_path.name
             dataframe["number of args"] = dataframe["args"].apply(lambda x: len(x))
             data_frames.append(dataframe)
 
