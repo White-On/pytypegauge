@@ -101,6 +101,10 @@ def is_arg_typed(arg: str) -> bool:
 
 
 def get_git_files(directory: Path) -> list:
+    if not directory.exists():
+        raise FileNotFoundError(f"No such file or directory: {directory}")
+    if not (directory / ".git").exists():
+        raise FileNotFoundError(f"No git repository found in {directory}")
     result_command = subprocess.run(
         ["git", "ls-files"], cwd=directory, capture_output=True, text=True
     )
@@ -280,9 +284,12 @@ def get_color_for_percent(total_percent: float) -> str:
             return color
     return "green"  # Default color if no range matches
 
-
-def main() -> None:
-    args = parse_arguments()
+def typegauge(
+    args: argparse.Namespace = None
+) -> None:
+    if args is None:
+        logger.warning("No arguments provided")
+        raise ValueError("No arguments provided")
     path_file = Path(args.directory)
     if args.git:
         tracked_path = get_git_files(path_file)
@@ -315,6 +322,9 @@ def main() -> None:
         generate_full_report(df)
     logger.info(output, extra={"markup": True, "highlighter": None})
 
+def main() -> None:
+    args = parse_arguments()
+    typegauge(args)
 
 if __name__ == "__main__":
     main()

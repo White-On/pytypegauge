@@ -43,8 +43,8 @@ pytypegauge --help
 - [x] Add the feature with matplotlib
 - [x] Translate the code in English
 - [x] Add the feature with pandas
+- [ ] add tests for the project -> need simple test to check the basic behavior of the project. No need to check for all the function of the project
 - [ ] Clean the code
-- [ ] add tests for the project
 - [ ] Add to pypi 
 - [ ] Make the readme more informative
 - [ ] Create the hooks to use this project as a template
