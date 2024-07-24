@@ -136,6 +136,9 @@ def generate_full_report(df):
     #  We replace the problem column with the explanation
     clean_report["problem"] = clean_report["problem"].map(problem_code_and_explanation)
     
+    # we suround the name of the file and the name of the function with backticks
+    clean_report["file"] = clean_report["file"].apply(lambda x: f"`{x}`")
+    clean_report["name"] = clean_report["name"].apply(lambda x: f"`{x}`")
     markdown_table = clean_report.to_markdown(index=False)
     # create full_report.md
     with open("full_report.md", "w") as f:
