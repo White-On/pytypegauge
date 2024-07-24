@@ -14,28 +14,28 @@ from rich.progress import Progress
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Analyse le typage du code python dans un répertoire spécifié"
+        description="Analyze the typing of python code in a specified directory"
     )
     parser.add_argument(
-        "directory", type=str, help="Le répertoire à analyser", default="."
+        "directory", type=str, help="the specified directory", default="."
     )
     parser.add_argument(
         "-g",
         "--git",
         action="store_true",
-        help="Analyse uniquement les fichiers suivis par git",
+        help="Analyze only files tracked by git",
     )
     parser.add_argument(
         "-p",
         "--plot-output",
         action="store_true",
-        help="Affiche un graphique des résultats",
+        help="Display a graph of distribution of the problem found in the code",
     )
     parser.add_argument(
         "-csv",
         "--csv-output",
         type=str,
-        help="Nom du fichier CSV pour sauvegarder les résultats",
+        help="Name of the csv file where the results will be saved",
         default=None,
     )
     parser.add_argument(
@@ -48,13 +48,13 @@ def parse_arguments() -> argparse.Namespace:
         "-c",
         "--clean-output",
         action="store_true",
-        help="Renvoie uniquement le pourcentage de typage des arguments",
+        help="Only return the percentage of typed arguments (useful for scripts)",
     )
     parser.add_argument(
         "-f",
         "--full-report",
         action="store_true",
-        help="Renvoie un rapport complet",
+        help="Create a full report with all the functions that are not typed",
     )
     return parser.parse_args()
 
@@ -214,8 +214,6 @@ def generate_full_report(function_dataframe: pd.DataFrame) -> None:
         svg_buffer = BytesIO()
         plt.savefig(svg_buffer, format='svg')
         plt.close()
-
-        # Obtenir le contenu SVG sous forme de chaîne de caractères
         svg_data = svg_buffer.getvalue().decode('utf-8')
 
     else:
@@ -259,7 +257,6 @@ def get_percent_typed_args(*python_file_paths:Path, progress_bar=False) -> pd.Da
             dataframe = pd.DataFrame(functions)
             if dataframe.empty:
                 # some files may not have any function like __init__.py
-                # print(f"No function in {python_file_path.name}")
                 continue
             dataframe["number of typed args"] = dataframe["typed_args"].apply(
                 lambda x: sum(x)

@@ -41,7 +41,7 @@ pytypegauge --help
 - [x] Add a Logger to the project for Debugging
 - [x] Type correctly the project
 - [x] Add the feature with matplotlib
-- [ ] Translate the code in English
+- [x] Translate the code in English
 - [x] Add the feature with pandas
 - [ ] Clean the code
 - [ ] add tests for the project
