@@ -6,6 +6,7 @@ import re
 import contextlib
 import subprocess
 import argparse
+from .logger import logger
 
 from rich.progress import Progress
 
@@ -123,6 +124,7 @@ def generate_full_report(df):
         2: "The return is not typed",
         3: "Some arguments and the return are not typed"
     }
+    not_typed_df = not_typed_df.copy()
     not_typed_df.loc[:, "problem"] = 0
     not_typed_df.loc[both_not_typed, "problem"] = 3
     not_typed_df.loc[return_not_typed & ~both_not_typed, "problem"] = 2
@@ -180,6 +182,19 @@ def get_percent_typed_args(*python_file_paths, progress_bar=False):
 
     return pd.concat(data_frames)
 
+def get_color_for_percent(total_percent):
+    color_ranges = {
+        (0, 0.4): "red",
+        (0.4, 0.6): "orange",
+        (0.6, 0.8): "yellow",
+        (0.8, 1): "green"
+    }
+    
+    for range, color in color_ranges.items():
+        if range[0] <= total_percent < range[1]:
+            return color
+    return "green"  # Default color if no range matches
+
 
 def main():
     args = parse_arguments()
@@ -198,7 +213,8 @@ def main():
 
     df = get_percent_typed_args(*python_file_paths, progress_bar=True)
     total_percent = df["number of typed args"].sum() / df["number of args"].sum()
-    output = f"Total percent of typed arguments in all python files: {total_percent:.2%}"
+    color = get_color_for_percent(total_percent)
+    output = f"Total percent of typed arguments in all python files: [{color} bold]{total_percent:.2%}[/]"
     if args.markdown_output:
         markdown_element = f"![Progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
         output = markdown_element
@@ -212,7 +228,7 @@ def main():
         plt.show()
     if args.full_report:
         generate_full_report(df)
-    print(output)
+    logger.info(output, extra={"markup": True, "highlighter": None})
 
 
 if __name__ == "__main__":

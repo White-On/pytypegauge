@@ -28,6 +28,7 @@ setup(
         "matplotlib>=3.7.5",
         "numpy>=1.24.4",
         "pandas>=2.0.3",
+        "tabulate",
     ],
     extras_require={
         "dev": [

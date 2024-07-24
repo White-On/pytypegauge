@@ -37,9 +37,11 @@ pytypegauge --help
 - [x] Add hooks for pre-commit
 - [x] Add a description of the project
 - [x] Add a list of the project's dependencies in setup.py
-- [ ] Fix bugs in the project
+- [x] Fix bugs in the project
+- [x] Add a Logger to the project for Debugging
 - [ ] add tests for the project
-- [ ] Add the feature with pandas and matplotlib
+- [x] Add the feature with pandas
+- [ ] Add the feature with matplotlib
 - [ ] Add to pypi 
 - [ ] Make the readme more informative
 - [ ] Create the hooks to use this project as a template
