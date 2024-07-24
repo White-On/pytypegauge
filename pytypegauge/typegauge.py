@@ -48,6 +48,12 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Renvoie uniquement le pourcentage de typage des arguments",
     )
+    parser.add_argument(
+        "-f",
+        "--full-report",
+        action="store_true",
+        help="Renvoie un rapport complet",
+    )
     return parser.parse_args()
 
 
@@ -99,6 +105,49 @@ def get_git_files(directory):
     tracked_files = result_command.stdout.splitlines()
 
     return [directory / file for file in tracked_files]
+
+def generate_full_report(df):
+    condition = df["typed_args"].apply(lambda args: any(not arg for arg in args)) | (df["return"] == "<no-return>")
+
+    not_typed_df = df[condition]
+    # add a collumn to the dataframe named problem with a value depending on a condition
+    # 1 if some of the arguments are not typed 
+    # 2 if the return is not typed
+    # 3 if both are not typed
+    some_args_not_typed = not_typed_df["typed_args"].apply(lambda args: any(not arg for arg in args))
+    return_not_typed = not_typed_df["return"] == "<no-return>"
+    both_not_typed = some_args_not_typed & return_not_typed
+    problem_code_and_explanation = {
+        0: "No problem (Should not appear)",
+        1: "Some arguments are not typed",
+        2: "The return is not typed",
+        3: "Some arguments and the return are not typed"
+    }
+    not_typed_df.loc[:, "problem"] = 0
+    not_typed_df.loc[both_not_typed, "problem"] = 3
+    not_typed_df.loc[return_not_typed & ~both_not_typed, "problem"] = 2
+    not_typed_df.loc[some_args_not_typed & ~both_not_typed, "problem"] = 1   
+
+    # We remove the columns typed_args,return,args and number of typed args
+    # because they are not useful for the user
+    clean_report = not_typed_df.drop(columns=["typed_args","return","args","number of typed args", "number of args"])
+    #  We replace the problem column with the explanation
+    clean_report["problem"] = clean_report["problem"].map(problem_code_and_explanation)
+    
+    markdown_table = clean_report.to_markdown(index=False)
+    # create full_report.md
+    with open("full_report.md", "w") as f:
+        f.write("# Full report\n")
+        f.write(f"- Total number of functions: **{df.shape[0]}**\n")
+        f.write(f"- Total number of typed args: **{df['number of typed args'].sum()}**\n")
+        f.write(f"- Total number of args: **{df['number of args'].sum()}**\n")
+        f.write(f"- Total percent of typed arguments: **{df['number of typed args'].sum() / df['number of args'].sum():.2%}**\n")
+        f.write("\n")
+        f.write("### Explanation Table\n")
+        f.write("\n")
+        f.write(markdown_table)
+
+    
 
 
 def get_percent_typed_args(*python_file_paths, progress_bar=False):
@@ -161,6 +210,8 @@ def main():
         plt.bar(df["name"], df["number of typed args"] / df["number of args"])
         plt.xticks(rotation=90)
         plt.show()
+    if args.full_report:
+        generate_full_report(df)
     print(output)
 
 

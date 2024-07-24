@@ -17,7 +17,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "typegauge = typegauge:main",
+            "typegauge = pytypegauge.typegauge:main",
         ]
     },
     # package_dir={"": "pytypegauge"},
