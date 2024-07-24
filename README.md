@@ -40,9 +40,11 @@ pytypegauge --help
 - [x] Fix bugs in the project
 - [x] Add a Logger to the project for Debugging
 - [x] Type correctly the project
-- [ ] Add the feature with matplotlib
-- [ ] add tests for the project
+- [x] Add the feature with matplotlib
+- [ ] Translate the code in English
 - [x] Add the feature with pandas
+- [ ] Clean the code
+- [ ] add tests for the project
 - [ ] Add to pypi 
 - [ ] Make the readme more informative
 - [ ] Create the hooks to use this project as a template
