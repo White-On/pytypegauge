@@ -14,10 +14,10 @@ from rich.progress import Progress
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Analyze the typing of python code in a specified directory"
+        description="Analyze the typing of python code in a specified directory or python file"
     )
     parser.add_argument(
-        "directory", type=str, help="the specified directory", default="."
+        "input", type=str, help="the specified directory or python file", default="."
     )
     parser.add_argument(
         "-g",
@@ -290,7 +290,7 @@ def typegauge(
     if args is None:
         logger.warning("No arguments provided")
         raise ValueError("No arguments provided")
-    path_file = Path(args.directory)
+    path_file = Path(args.input)
     if args.git:
         tracked_path = get_git_files(path_file)
         python_file_paths = [path for path in tracked_path if path.suffix == ".py"]
@@ -298,6 +298,10 @@ def typegauge(
             raise FileNotFoundError(
                 "No python file tracked by git found in the specified directory ( did you forget to initialize a git repository ?)"
             )
+    elif path_file.is_file():
+        if path_file.suffix != ".py":
+            raise FileNotFoundError("The specified file is not a python file")
+        python_file_paths = [path_file]
     else:
         python_file_paths = list(path_file.rglob("*.py"))
     if python_file_paths == []:
