@@ -58,7 +58,7 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def extract_args_from_function(args):
+def extract_args_from_function(args: str) -> list:
     """
     Only keep the name of the arguments
     """
@@ -69,13 +69,13 @@ def extract_args_from_function(args):
     return splited_args
 
 
-def extract_return_from_function(return_type):
+def extract_return_from_function(return_type: str) -> str:
     if return_type == "":
         return "<no-return>"
     return return_type.strip()
 
 
-def extract_function_from_code(code):
+def extract_function_from_code(code: str) -> list:
     reg_exp = re.compile(r"def\s+(\w+)\s*\(([\s\S]*?)\)\s*(?:->\s*([^\{\n]+))?\s*:")
     matches = reg_exp.findall(code)
     functions = []
@@ -89,7 +89,7 @@ def extract_function_from_code(code):
     return functions
 
 
-def is_arg_typed(arg):
+def is_arg_typed(arg: str) -> bool:
     """
     the function checks if the argument is followed by a type
     so if there is a : or a = in the argument then it is typed
@@ -99,7 +99,7 @@ def is_arg_typed(arg):
     return ":" in arg or "=" in arg
 
 
-def get_git_files(directory):
+def get_git_files(directory: Path) -> list:
     result_command = subprocess.run(
         ["git", "ls-files"], cwd=directory, capture_output=True, text=True
     )
@@ -107,10 +107,10 @@ def get_git_files(directory):
 
     return [directory / file for file in tracked_files]
 
-def generate_full_report(df):
-    condition = df["typed_args"].apply(lambda args: any(not arg for arg in args)) | (df["return"] == "<no-return>")
+def generate_full_report(function_dataframe: pd.DataFrame) -> None:
+    condition = function_dataframe["typed_args"].apply(lambda args: any(not arg for arg in args)) | (function_dataframe["return"] == "<no-return>")
 
-    not_typed_df = df[condition]
+    not_typed_df = function_dataframe[condition]
     # add a collumn to the dataframe named problem with a value depending on a condition
     # 1 if some of the arguments are not typed 
     # 2 if the return is not typed
@@ -143,10 +143,10 @@ def generate_full_report(df):
     # create full_report.md
     with open("full_report.md", "w") as f:
         f.write("# Full report\n")
-        f.write(f"- Total number of functions: **{df.shape[0]}**\n")
-        f.write(f"- Total number of typed args: **{df['number of typed args'].sum()}**\n")
-        f.write(f"- Total number of args: **{df['number of args'].sum()}**\n")
-        f.write(f"- Total percent of typed arguments: **{df['number of typed args'].sum() / df['number of args'].sum():.2%}**\n")
+        f.write(f"- Total number of functions: **{function_dataframe.shape[0]}**\n")
+        f.write(f"- Total number of typed args: **{function_dataframe['number of typed args'].sum()}**\n")
+        f.write(f"- Total number of args: **{function_dataframe['number of args'].sum()}**\n")
+        f.write(f"- Total percent of typed arguments: **{function_dataframe['number of typed args'].sum() / function_dataframe['number of args'].sum():.2%}**\n")
         f.write("\n")
         f.write("### Explanation Table\n")
         f.write("\n")
@@ -155,7 +155,7 @@ def generate_full_report(df):
     
 
 
-def get_percent_typed_args(*python_file_paths, progress_bar=False):
+def get_percent_typed_args(*python_file_paths:Path, progress_bar=False) -> pd.DataFrame:
     data_frames = []
 
     progress_context = Progress() if progress_bar else contextlib.nullcontext()
@@ -185,7 +185,7 @@ def get_percent_typed_args(*python_file_paths, progress_bar=False):
 
     return pd.concat(data_frames)
 
-def get_color_for_percent(total_percent):
+def get_color_for_percent(total_percent: float) -> str:
     color_ranges = {
         (0, 0.4): "red",
         (0.4, 0.6): "orange",
@@ -199,7 +199,7 @@ def get_color_for_percent(total_percent):
     return "green"  # Default color if no range matches
 
 
-def main():
+def main() -> None:
     args = parse_arguments()
     path_file = Path(args.directory)
     if args.git:
