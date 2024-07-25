@@ -1,6 +1,12 @@
 # PyTypeGauge
 
-PyTypeGauge is a Python library that provides comprehensive statistics and metrics for your typed functions and Python code. The primary goal is to encourage developers to achieve 100% type coverage in their codebases.
+**PyTypeGauge** is a Python library that provides comprehensive statistics and metrics for your typed functions and Python code. The primary goal is to encourage developers to achieve 100% type coverage in their codebases.
+
+**⚠️ Note:** **PyTypeGauge** is a simple tool designed to encourage better type annotation in your Python code. It does not validate the correctness of the types you add. The concept is straightforward: it recursively scans all Python files in a repository, using regular expressions to identify function prototypes and check whether their arguments and return types are annotated. **PyTypeGauge** then calculates the proportion of fully typed functions and arguments, providing a summary of your type coverage. Additionally, you can generate a comprehensive report in markdown format, highlighting functions and files that may need refactoring or additional type annotations.
+
+**PyTypeGauge** is intended to be used with [pre-commit hooks](https://pre-commit.com/) and can update your `README.md` with your project's type coverage progress.
+
+For more advanced type checking and validation, consider using other well-maintained libraries such as mypy or pyright.
 
 ## Features
 
@@ -43,7 +49,7 @@ pytypegauge --help
 - [x] Add the feature with matplotlib
 - [x] Translate the code in English
 - [x] Add the feature with pandas
-- [ ] add tests for the project -> need simple test to check the basic behavior of the project. No need to check for all the function of the project
+- [x] add tests for the project
 - [ ] Clean the code
 - [ ] Add to pypi 
 - [ ] Make the readme more informative

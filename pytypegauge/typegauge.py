@@ -80,12 +80,13 @@ def extract_function_from_code(code: str) -> list:
     reg_exp = re.compile(r"def\s+(\w+)\s*\(([\s\S]*?)\)\s*(?:->\s*([^\{\n]+))?\s*:")
     matches = reg_exp.findall(code)
     functions = []
-    for match in matches:
+    for function_name, function_args, function_return in matches:
         function = {}
-        function["name"] = match[0]
-        function["args"] = extract_args_from_function(match[1]) if match[1] != "" else []
-        function["return"] = extract_return_from_function(match[2]) if match[2] != "" else "<no-return>"
-        function["typed_args"] = list(map(is_arg_typed, match[1].split(","))) if match[1] != "" else []
+        function["name"] = function_name
+        function["args"] = extract_args_from_function(function_args) if function_args != "" else []
+        function["return"] = extract_return_from_function(function_return) if function_return != "" else "<no-return>"
+        function["typed_args"] = list(map(is_arg_typed, function_args.split(","))) if function_args != "" else []
+        function["typed_return"] = is_return_typed(function_return)
         functions.append(function)
     return functions
 
@@ -98,6 +99,9 @@ def is_arg_typed(arg: str) -> bool:
     if "cls" in arg or "self" in arg:
         return True
     return ":" in arg or "=" in arg
+
+def is_return_typed(return_type: str) -> bool:
+    return return_type != "<no-return>"
 
 
 def get_git_files(directory: Path) -> list:
