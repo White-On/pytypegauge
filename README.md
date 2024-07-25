@@ -50,7 +50,7 @@ pytypegauge --help
 - [x] Translate the code in English
 - [x] Add the feature with pandas
 - [x] add tests for the project
-- [ ] Clean the code
+- [x] Clean the code
 - [ ] Add to pypi 
-- [ ] Make the readme more informative
+- [x] Make the readme more informative
 - [ ] Create the hooks to use this project as a template
