@@ -18,8 +18,6 @@ For more advanced type checking and validation, consider using other well-mainta
 
 To install PyTypeGauge, run:
 
-**⚠️ Note:** PyTypeGauge is not yet available on PyPI.
-
 ```bash
 pip install pytypegauge
 ```
@@ -51,6 +49,6 @@ pytypegauge --help
 - [x] Add the feature with pandas
 - [x] add tests for the project
 - [x] Clean the code
-- [ ] Add to pypi 
+- [x] Add to pypi 
 - [x] Make the readme more informative
 - [ ] Create the hooks to use this project as a template

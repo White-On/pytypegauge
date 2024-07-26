@@ -5,3 +5,4 @@ full_report.md
 build/
 dist/
 .pytest_cache/
+.pypirc
