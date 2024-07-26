@@ -55,6 +55,14 @@ def parse_arguments() -> argparse.Namespace:
         action="store_true",
         help="Create a full report with all the functions that are not typed",
     )
+
+    parser.add_argument(
+        "-ho",
+        "--hooks",
+        action="store_true",
+        help="Output the results in a special progress markdown format (made for hooks on github actions)",
+    )
+
     return parser.parse_args()
 
 
@@ -325,6 +333,29 @@ def get_color_for_percent(total_percent: float) -> str:
             return color
     return "green"  # Default color if no range matches
 
+def hooks_action(markdown_element: str) -> None:
+    """
+    This function is used to write the markdown element in the README.md file
+    """
+    logger.debug("Hooks action")
+    # check if the README.md file exists
+    readme_file = Path("README.md")
+    if not readme_file.exists():
+        logger.warning("No README.md file found")
+        return
+    # read the content of the README.md file
+    readme_content = readme_file.read_text()
+    # check if there is a ![typo_progress] tag in the README.md file
+    if "![typo_progress]" in readme_content:
+        # replace the line with [typo_progress] by the markdown_element
+        readme_content = re.sub(r"!\[typo_progress\].*", markdown_element, readme_content)
+    else:
+        # add the markdown_element at the end of the file
+        readme_content += markdown_element
+    
+    # write the new content in the README.md file
+    readme_file.write_text(readme_content)
+
 def typegauge(
     args: argparse.Namespace = None
 ) -> None:
@@ -353,8 +384,11 @@ def typegauge(
     color = get_color_for_percent(total_percent)
     output = f"Total percent of typed arguments in all python files: [{color} bold]{total_percent:.2%}[/]"
     if args.markdown_output:
-        markdown_element = f"![Progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
+        markdown_element = f"![typo_progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
         output = markdown_element
+        if args.hooks:
+            hooks_action(markdown_element)
+            return
         print(output)
         return
     if args.clean_output:
