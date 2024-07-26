@@ -1,4 +1,3 @@
-
 from . import typegauge
 from .typegauge import (
     get_git_files,
@@ -8,6 +7,7 @@ from .typegauge import (
     extract_function_from_code,
     extract_return_from_function,
     extract_args_from_function,
+    main,
 )
 
 __all__ = [

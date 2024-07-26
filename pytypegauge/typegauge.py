@@ -6,11 +6,10 @@ import re
 import contextlib
 import subprocess
 import argparse
-from .logger import logger
+
 from io import BytesIO
-
 from rich.progress import Progress
-
+from .logger import logger
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
