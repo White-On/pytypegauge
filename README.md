@@ -94,3 +94,8 @@ By using these options, you can tailor the output of `typegauge` to suit your ne
 - [x] Add to pypi 
 - [x] Make the readme more informative
 - [ ] Create the hooks to use this project as a template
+- [ ] Add the feature to generate a badge
+- [ ] Add verbose mode
+
+
+![Progress](https://progress-bar.dev/83/?title=typed&width=150&scale=100&suffix=%)
