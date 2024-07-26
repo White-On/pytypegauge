@@ -1,6 +1,7 @@
 -   id: pytypegauge
     name: pytypegauge
-    entry: typegauge -g -md  . >> README.md
+    entry: typegauge -g -md  . 
     description: "Calculate type coverage of your Python code"
     language: python
     types: [text]
+    always_run: true
