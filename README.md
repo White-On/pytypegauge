@@ -8,7 +8,7 @@
 
 ## Example Output (current type coverage)
 
-![typo_progress](https://progress-bar.dev/84/?title=typed&width=150&scale=100&suffix=%)
+![typo_progress](https://progress-bar.dev/80/?title=typed&width=150&scale=100&suffix=%)
 
 For more advanced type checking and validation, consider using other well-maintained libraries such as mypy or pyright.
 

@@ -1,6 +1,6 @@
 -   id: pytypegauge
     name: pytypegauge
-    entry: typegauge -g -md  . 
+    entry: typegauge -g -md -ho . 
     description: "Calculate type coverage of your Python code"
     language: python
     types: [text]

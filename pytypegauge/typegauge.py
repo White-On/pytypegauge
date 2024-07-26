@@ -11,6 +11,7 @@ from io import BytesIO
 from rich.progress import Progress
 from .logger import logger
 
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Analyze the typing of python code in a specified directory or python file"
@@ -95,6 +96,7 @@ def extract_function_components_from_code(code: str) -> list:
     reg_exp = re.compile(r"def\s+(\w+)\s*\(([\s\S]*?)\)\s*(?:->\s*([^\{\n]+))?\s*:")
     return reg_exp.findall(code)
 
+
 def extract_function_from_code(code: str) -> list:
     """
     use the extract_function_components_from_code function to get the components of the function
@@ -106,9 +108,19 @@ def extract_function_from_code(code: str) -> list:
     for function_name, function_args, function_return in functions_components:
         function = {}
         function["name"] = function_name
-        function["args"] = extract_args_from_function(function_args) if function_args != "" else []
-        function["return"] = extract_return_from_function(function_return) if function_return != "" else "<no-return>"
-        function["typed_args"] = list(map(is_arg_typed, function_args.split(","))) if function_args != "" else []
+        function["args"] = (
+            extract_args_from_function(function_args) if function_args != "" else []
+        )
+        function["return"] = (
+            extract_return_from_function(function_return)
+            if function_return != ""
+            else "<no-return>"
+        )
+        function["typed_args"] = (
+            list(map(is_arg_typed, function_args.split(",")))
+            if function_args != ""
+            else []
+        )
         function["typed_return"] = is_return_typed(function_return)
         functions.append(function)
     return functions
@@ -122,6 +134,7 @@ def is_arg_typed(arg: str) -> bool:
     if "cls" in arg or "self" in arg:
         return True
     return ":" in arg or "=" in arg
+
 
 def is_return_typed(return_type: str) -> bool:
     """
@@ -145,17 +158,20 @@ def get_git_files(directory: Path) -> list:
 
     return [directory / file for file in tracked_files]
 
+
 def add_problem_column(dataframe: pd.DataFrame) -> pd.DataFrame:
     """
     add a collumn to the dataframe named problem with a value depending on a condition
     0 if there is no problem
-    1 if some of the arguments are not typed 
+    1 if some of the arguments are not typed
     2 if the return is not typed
     3 if both are not typed
     """
     dataframe = dataframe.copy()
 
-    some_args_not_typed = dataframe["typed_args"].apply(lambda args: any(not arg for arg in args))
+    some_args_not_typed = dataframe["typed_args"].apply(
+        lambda args: any(not arg for arg in args)
+    )
     return_not_typed = dataframe["return"] == "<no-return>"
     both_not_typed = some_args_not_typed & return_not_typed
 
@@ -165,6 +181,7 @@ def add_problem_column(dataframe: pd.DataFrame) -> pd.DataFrame:
     dataframe.loc[both_not_typed, "problem"] = 3
 
     return dataframe
+
 
 def typage_distribution(function_dataframe: pd.DataFrame) -> dict:
     """
@@ -176,13 +193,26 @@ def typage_distribution(function_dataframe: pd.DataFrame) -> dict:
     """
     dataframe = add_problem_column(function_dataframe)
 
-    dataframe = dataframe.drop(columns=["typed_args","return","args","number of typed args", "number of args"])
-    problem_distribution = {file_name: [0] * 4 for file_name in dataframe["file"].unique()}
-    group_file_problem_distribution = dataframe.groupby(['file', 'problem']).size().unstack(fill_value=0).T.to_dict()
+    dataframe = dataframe.drop(
+        columns=[
+            "typed_args",
+            "return",
+            "args",
+            "number of typed args",
+            "number of args",
+        ]
+    )
+    problem_distribution = {
+        file_name: [0] * 4 for file_name in dataframe["file"].unique()
+    }
+    group_file_problem_distribution = (
+        dataframe.groupby(["file", "problem"]).size().unstack(fill_value=0).T.to_dict()
+    )
     for file_name, problems in group_file_problem_distribution.items():
-        problem_distribution[file_name] = list(problems.values()) 
-    
+        problem_distribution[file_name] = list(problems.values())
+
     return problem_distribution
+
 
 def survey(results: dict, category_names: list) -> tuple:
     """
@@ -199,11 +229,19 @@ def survey(results: dict, category_names: list) -> tuple:
     # we keep the unormalized data to display the distribution of the problem even when there is not a equal number of functions in each file
     unormalized_data = np.array(list(results.values()), dtype=object)
     # when there is no problem we replace the 0 by an empty string to avoid displaying 0
-    unormalized_data[unormalized_data == 0] = ''
-    data = np.array(list({key: np.round(distib/np.sum(distib), 3) for key, distib in results.items()}.values()))
+    unormalized_data[unormalized_data == 0] = ""
+    data = np.array(
+        list(
+            {
+                key: np.round(distib / np.sum(distib), 3)
+                for key, distib in results.items()
+            }.values()
+        )
+    )
     data_cum = data.cumsum(axis=1)
-    category_colors = plt.colormaps['RdYlGn'](
-        np.linspace(0.15, 0.85, data.shape[1])[::-1])
+    category_colors = plt.colormaps["RdYlGn"](
+        np.linspace(0.15, 0.85, data.shape[1])[::-1]
+    )
 
     fig, ax = plt.subplots(figsize=(10, 5 + len(results) * 0.4))
     ax.invert_yaxis()
@@ -213,54 +251,81 @@ def survey(results: dict, category_names: list) -> tuple:
     for i, (colname, color) in enumerate(zip(category_names, category_colors)):
         widths = data[:, i]
         starts = data_cum[:, i] - widths
-        rects = ax.barh(labels, widths, left=starts, height=0.5,
-                        label=colname, color=color)
+        rects = ax.barh(
+            labels, widths, left=starts, height=0.5, label=colname, color=color
+        )
 
         r, g, b, _ = color
-        text_color = 'white' if r * g * b < 0.5 else 'darkgrey'
-        ax.bar_label(rects, label_type='center', color=text_color, labels=unormalized_data[:, i])
-    ax.legend(ncols=len(category_names), bbox_to_anchor=(0, 1),
-              loc='lower left', fontsize='small')
+        text_color = "white" if r * g * b < 0.5 else "darkgrey"
+        ax.bar_label(
+            rects, label_type="center", color=text_color, labels=unormalized_data[:, i]
+        )
+    ax.legend(
+        ncols=len(category_names),
+        bbox_to_anchor=(0, 1),
+        loc="lower left",
+        fontsize="small",
+    )
 
     return fig, ax
 
-def generate_no_problem_report(function_dataframe: pd.DataFrame, report_file_name: str) -> None:
+
+def generate_no_problem_report(
+    function_dataframe: pd.DataFrame, report_file_name: str
+) -> None:
     """
     This function generates a markdown report with the functions that are well typed
     """
     with open("full_report.md", "w") as f:
         f.write("# Full report\n")
         f.write(f"- Total number of functions: **{function_dataframe.shape[0]}**\n")
-        f.write(f"- Total number of typed args: **{function_dataframe['number of typed args'].sum()}**\n")
-        f.write(f"- Total number of args: **{function_dataframe['number of args'].sum()}**\n")
-        f.write(f"- Total percent of typed arguments: **{function_dataframe['number of typed args'].sum() / function_dataframe['number of args'].sum():.2%}**\n")
+        f.write(
+            f"- Total number of typed args: **{function_dataframe['number of typed args'].sum()}**\n"
+        )
+        f.write(
+            f"- Total number of args: **{function_dataframe['number of args'].sum()}**\n"
+        )
+        f.write(
+            f"- Total percent of typed arguments: **{function_dataframe['number of typed args'].sum() / function_dataframe['number of args'].sum():.2%}**\n"
+        )
         f.write("\n")
         f.write("## 🎉🎂✨🍰🥳 No Typing issues were found in the directory\n")
+
 
 def generate_report(function_dataframe: pd.DataFrame) -> None:
     report_file_name = "full_report.md"
 
     function_dataframe_with_problem = add_problem_column(function_dataframe)
     is_problem_different_from_zero = function_dataframe_with_problem["problem"] != 0
-    not_well_typed_function_dataframe = function_dataframe_with_problem[is_problem_different_from_zero]
+    not_well_typed_function_dataframe = function_dataframe_with_problem[
+        is_problem_different_from_zero
+    ]
     if not_well_typed_function_dataframe.empty:
         logger.debug("No problem found in the code")
         generate_no_problem_report(function_dataframe, report_file_name)
         return
-    
+
     problem_code_and_explanation = {
         0: "No problem (Should not appear)",
         1: "Some arguments are not typed",
         2: "The return is not typed",
-        3: "Some arguments and the return are not typed"
+        3: "Some arguments and the return are not typed",
     }
 
     # We remove the columns typed_args,return,args and number of typed args
     # because they are not useful for the user
-    clean_report = not_well_typed_function_dataframe.drop(columns=["typed_args","return","args","number of typed args", "number of args"])
+    clean_report = not_well_typed_function_dataframe.drop(
+        columns=[
+            "typed_args",
+            "return",
+            "args",
+            "number of typed args",
+            "number of args",
+        ]
+    )
     #  We replace the problem column with the explanation
     clean_report["problem"] = clean_report["problem"].map(problem_code_and_explanation)
-    
+
     # we suround the name of the file and the name of the function with backticks
     clean_report["file"] = clean_report["file"].apply(lambda x: f"`{x}`")
     clean_report["name"] = clean_report["name"].apply(lambda x: f"`{x}`")
@@ -270,16 +335,22 @@ def generate_report(function_dataframe: pd.DataFrame) -> None:
     problem_distribution = typage_distribution(function_dataframe)
     survey(problem_distribution, list(problem_code_and_explanation.values()))
     svg_buffer = BytesIO()
-    plt.savefig(svg_buffer, format='svg')
+    plt.savefig(svg_buffer, format="svg")
     plt.close()
-    svg_data = svg_buffer.getvalue().decode('utf-8')
+    svg_data = svg_buffer.getvalue().decode("utf-8")
     # create full_report.md
     with open(report_file_name, "w") as f:
         f.write("# Full report\n")
         f.write(f"- Total number of functions: **{function_dataframe.shape[0]}**\n")
-        f.write(f"- Total number of typed args: **{function_dataframe['number of typed args'].sum()}**\n")
-        f.write(f"- Total number of args: **{function_dataframe['number of args'].sum()}**\n")
-        f.write(f"- Total percent of typed arguments: **{function_dataframe['number of typed args'].sum() / function_dataframe['number of args'].sum():.2%}**\n")
+        f.write(
+            f"- Total number of typed args: **{function_dataframe['number of typed args'].sum()}**\n"
+        )
+        f.write(
+            f"- Total number of args: **{function_dataframe['number of args'].sum()}**\n"
+        )
+        f.write(
+            f"- Total percent of typed arguments: **{function_dataframe['number of typed args'].sum() / function_dataframe['number of args'].sum():.2%}**\n"
+        )
         f.write("\n")
         f.write("### Explanation Table\n")
         f.write("\n")
@@ -287,11 +358,16 @@ def generate_report(function_dataframe: pd.DataFrame) -> None:
         f.write("\n")
         f.write("### Distribution of the problem\n")
         f.write("\n")
-        f.write("The distribution of the problem is the number of functions that have a specific problem\n")
+        f.write(
+            "The distribution of the problem is the number of functions that have a specific problem\n"
+        )
         f.write("\n")
         f.write(svg_data)
 
-def get_percent_typed_args(*python_file_paths:Path, progress_bar=False) -> pd.DataFrame:
+
+def get_percent_typed_args(
+    *python_file_paths: Path, progress_bar=False
+) -> pd.DataFrame:
     data_frames = []
 
     progress_context = Progress() if progress_bar else contextlib.nullcontext()
@@ -320,24 +396,26 @@ def get_percent_typed_args(*python_file_paths:Path, progress_bar=False) -> pd.Da
 
     return pd.concat(data_frames)
 
+
 def get_color_for_percent(total_percent: float) -> str:
     color_ranges = {
         (0, 0.4): "red",
         (0.4, 0.6): "orange",
         (0.6, 0.8): "yellow",
-        (0.8, 1): "green"
+        (0.8, 1): "green",
     }
-    
+
     for range, color in color_ranges.items():
         if range[0] <= total_percent < range[1]:
             return color
     return "green"  # Default color if no range matches
 
+
 def hooks_action(markdown_element: str) -> None:
     """
     This function is used to write the markdown element in the README.md file
     """
-    logger.debug("Hooks action")
+    # logger.debug("Hooks action")
     # check if the README.md file exists
     readme_file = Path("README.md")
     if not readme_file.exists():
@@ -348,17 +426,18 @@ def hooks_action(markdown_element: str) -> None:
     # check if there is a ![typo_progress] tag in the README.md file
     if "![typo_progress]" in readme_content:
         # replace the line with [typo_progress] by the markdown_element
-        readme_content = re.sub(r"!\[typo_progress\].*", markdown_element, readme_content)
+        readme_content = re.sub(
+            r"!\[typo_progress\].*", markdown_element, readme_content
+        )
     else:
         # add the markdown_element at the end of the file
         readme_content += markdown_element
-    
+
     # write the new content in the README.md file
     readme_file.write_text(readme_content)
 
-def typegauge(
-    args: argparse.Namespace = None
-) -> None:
+
+def typegauge(args: argparse.Namespace = None) -> None:
     if args is None:
         logger.warning("No arguments provided")
         raise ValueError("No arguments provided")
@@ -399,15 +478,25 @@ def typegauge(
         df.to_csv(args.csv_output)
     if args.plot_output:
         problem_distribution = typage_distribution(df)
-        survey(problem_distribution, ["No problem", "Some arguments are not typed", "The return is not typed", "Some arguments and the return are not typed"])
+        survey(
+            problem_distribution,
+            [
+                "No problem",
+                "Some arguments are not typed",
+                "The return is not typed",
+                "Some arguments and the return are not typed",
+            ],
+        )
         plt.show()
     if args.full_report:
         generate_report(df)
     logger.info(output, extra={"markup": True, "highlighter": None})
 
+
 def main() -> None:
     args = parse_arguments()
     typegauge(args)
+
 
 if __name__ == "__main__":
     main()
