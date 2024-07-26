@@ -8,6 +8,8 @@
 
 For more advanced type checking and validation, consider using other well-maintained libraries such as mypy or pyright.
 
+---
+
 ## Features
 
 - Analyze the type coverage of your Python functions.
@@ -22,18 +24,58 @@ To install PyTypeGauge, run:
 pip install pytypegauge
 ```
 
-## Usage
-Here's a simple example of how to use PyTypeGauge:
+## How to Use `typegauge`
 
-```bash
-pytypegauge [directory] [options]
+`typegauge` is a command-line tool designed to analyze the type annotations in your Python code. You can specify a directory or a Python file, and the tool will evaluate the type coverage of your code. Below is a guide on how to use `typegauge` and the various options available.
+
+### Basic Usage
+
+To analyze a specific directory or Python file, simply run:
+
+```sh
+typegauge <input>
 ```
 
-for more information, run:
+Replace `<input>` with the path to the directory or Python file you want to analyze.
 
-```bash
-pytypegauge --help
-```
+### Options
+
+- **-h, --help**: Show the help message and exit.
+  ```sh
+  typegauge -h
+  ```
+
+- **-g, --git**: Analyze only files tracked by git. This is useful if you want to exclude untracked or ignored files.
+  ```sh
+  typegauge -g <input>
+  ```
+
+- **-p, --plot-output**: Display a graph showing the distribution of typing coverage in your code.
+  ```sh
+  typegauge -p <input>
+  ```
+
+- **-csv CSV_OUTPUT, --csv-output CSV_OUTPUT**: Save the results to a CSV file. Provide the desired CSV file name.
+  ```sh
+  typegauge -csv results.csv <input>
+  ```
+
+- **-md, --markdown-output**: Output the results in a markdown format suitable for inclusion in a `README.md` on GitHub. This is useful for creating progress badges or reports in your repository.
+  ```sh
+  typegauge -md <input>
+  ```
+
+- **-c, --clean-output**: Only return the percentage of typed arguments, which is useful for scripts and continuous integration setups.
+  ```sh
+  typegauge -c <input>
+  ```
+
+- **-f, --full-report**: Generate a full report listing all functions that are not fully typed. This can help you identify areas in your code that need improvement.
+  ```sh
+  typegauge -f <input>
+  ```
+
+By using these options, you can tailor the output of `typegauge` to suit your needs, whether you want a quick summary, a detailed report, or integration with other tools.
 
 
 ## TODO:
