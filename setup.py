@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="pytypegauge",
-    version="0.0.1",
+    version="0.1",
     description="A tool to measure the percentage of typed arguments in python functions",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,7 +21,7 @@ setup(
         ]
     },
     # package_dir={"": "pytypegauge"},
-    packages=find_packages(where="pytypegauge"),
+    packages=find_packages(),
     python_requires=">=3.8",
     install_requires=[
         "rich>=13.7.1",
@@ -35,6 +35,8 @@ setup(
             "twine>=4.0.2",
             "pytest>=8.3.1",
             "pre-commit>=3.7.1",
+            "black",
+            "wheel",
         ],
     },
 )
