@@ -64,6 +64,13 @@ def parse_arguments() -> argparse.Namespace:
         help="Output the results in a special progress markdown format (made for hooks on github actions)",
     )
 
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Increase output verbosity",
+    )
+
     return parser.parse_args()
 
 
@@ -148,8 +155,10 @@ def get_git_files(directory: Path) -> list:
     Use the git command to get all the files tracked by git in the specified directory
     """
     if not directory.exists():
+        logger.error(f"No such file or directory: {directory}")
         raise FileNotFoundError(f"No such file or directory: {directory}")
     if not (directory / ".git").exists():
+        logger.error(f"No git repository found in {directory}")
         raise FileNotFoundError(f"No git repository found in {directory}")
     result_command = subprocess.run(
         ["git", "ls-files"], cwd=directory, capture_output=True, text=True
@@ -445,17 +454,23 @@ def typegauge(args: argparse.Namespace = None) -> None:
     if args.git:
         tracked_path = get_git_files(path_file)
         python_file_paths = [path for path in tracked_path if path.suffix == ".py"]
+        logger.debug(f"Tracked files: {python_file_paths}")
         if python_file_paths == []:
+            logger.error(
+                "No python file tracked by git found in the specified directory ( did you forget to initialize a git repository ?)"
+            )
             raise FileNotFoundError(
                 "No python file tracked by git found in the specified directory ( did you forget to initialize a git repository ?)"
             )
     elif path_file.is_file():
         if path_file.suffix != ".py":
+            logger.error("The specified file is not a python file")
             raise FileNotFoundError("The specified file is not a python file")
         python_file_paths = [path_file]
     else:
         python_file_paths = list(path_file.rglob("*.py"))
     if python_file_paths == []:
+        logger.error("No python file found in the specified directory")
         raise FileNotFoundError("No python file found in the specified directory")
 
     df = get_percent_typed_args(*python_file_paths, progress_bar=False)
@@ -495,6 +510,7 @@ def typegauge(args: argparse.Namespace = None) -> None:
 
 def main() -> None:
     args = parse_arguments()
+    logger.setLevel("DEBUG" if args.verbose else "INFO")
     typegauge(args)
 
 

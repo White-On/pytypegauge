@@ -100,4 +100,5 @@ By using these options, you can tailor the output of `typegauge` to suit your ne
 - [x] Create the hooks to use this project as a template
 - [x] Add the feature to generate a badge
 - [x] Add the feature to generate a markdown file
-- [ ] Add verbose mode
+- [x] Add verbose mode
+- [ ] Clean code and arguments setup
