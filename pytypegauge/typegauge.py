@@ -484,7 +484,6 @@ def typegauge(args: argparse.Namespace = None) -> None:
             hooks_action(markdown_element)
             return
         print(output)
-        return
     if args.clean_output:
         output = total_percent
         print(output)

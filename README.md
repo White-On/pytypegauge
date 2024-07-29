@@ -81,6 +81,22 @@ Replace `<input>` with the path to the directory or Python file you want to anal
 
 By using these options, you can tailor the output of `typegauge` to suit your needs, whether you want a quick summary, a detailed report, or integration with other tools.
 
+## Hooks
+
+Pytypegauge can be used as a pre-commit hook. To do this, add the following configuration to your `.pre-commit-config.yaml` file:
+
+```yaml
+-   repo: https://github.com/White-On/pytypegauge
+    rev: [version]
+    hooks:
+    -   id: pytypegauge
+
+```
+The hooks will get all the python files in the repository and check the type coverage of the functions in the files. If there is a README.md file in the repository, the hook will update the file with the type coverage of the repository in a markdown format. you can place a [!typo_progress] and the hook will replace it with the type coverage of the repository.
+
+**Note:** - The hook will not update the README.md file if the file is not in the repository.
+          - The hook will not update the README.md file if the file does not contain the [!typo_progress] tag.
+          - The hook will take all python files, there is no method for now to exclude some files from the hook.
 
 ## TODO:
 
@@ -101,4 +117,4 @@ By using these options, you can tailor the output of `typegauge` to suit your ne
 - [x] Add the feature to generate a badge
 - [x] Add the feature to generate a markdown file
 - [x] Add verbose mode
-- [ ] Clean code and arguments setup
+- [x] Clean code and arguments setup
