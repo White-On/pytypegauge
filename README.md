@@ -10,7 +10,7 @@
 
 ![typo_progress](https://progress-bar.dev/84/?title=typed&width=150&scale=100&suffix=%)
 
-For more advanced type checking and validation, consider using other well-maintained libraries such as mypy or pyright.
+For more advanced type checking and validation, consider using other well-maintained libraries such as mypy or pyright. :)
 
 ---
 
