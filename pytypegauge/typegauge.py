@@ -473,7 +473,9 @@ def typegauge(args: argparse.Namespace = None) -> None:
         logger.error("No python file found in the specified directory")
         raise FileNotFoundError("No python file found in the specified directory")
 
-    df = get_percent_typed_args(*python_file_paths, progress_bar=False)
+    df = get_percent_typed_args(
+        *python_file_paths, progress_bar=True if args.verbose else False
+    )
     total_percent = df["number of typed args"].sum() / df["number of args"].sum()
     color = get_color_for_percent(total_percent)
     output = f"Total percent of typed arguments in all python files: [{color} bold]{total_percent:.2%}[/]"

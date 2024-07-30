@@ -6,7 +6,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="pytypegauge",
-    version="0.2",
+    version="1.0",
     description="A tool to measure the percentage of typed arguments in python functions",
     long_description=long_description,
     long_description_content_type="text/markdown",
