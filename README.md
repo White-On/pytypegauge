@@ -1,4 +1,4 @@
-# PyTypeGauge
+# ✏️🎚️✅ PyTypeGauge
 
 **PyTypeGauge** is a Python library that provides comprehensive statistics and metrics for your typed functions and Python code. The primary goal is to encourage developers to achieve 100% type coverage in their codebases.
 
@@ -14,13 +14,13 @@ For more advanced type checking and validation, consider using other well-mainta
 
 ---
 
-## Features
+## 🧩 Features
 
 - Analyze the type coverage of your Python functions.
 - Generate detailed reports on the use of type hints.
 - Track the progress of type hint adoption in your codebase.
 
-## Installation
+## 📥 Installation
 
 To install PyTypeGauge, run:
 
@@ -42,7 +42,7 @@ typegauge <input>
 
 Replace `<input>` with the path to the directory or Python file you want to analyze.
 
-### Options
+### ⚙️ Options
 
 - **-h, --help**: Show the help message and exit.
   ```sh
@@ -81,7 +81,7 @@ Replace `<input>` with the path to the directory or Python file you want to anal
 
 By using these options, you can tailor the output of `typegauge` to suit your needs, whether you want a quick summary, a detailed report, or integration with other tools.
 
-## Hooks
+## 🪝 Hooks
 
 Pytypegauge can be used as a pre-commit hook. To do this, add the following configuration to your `.pre-commit-config.yaml` file:
 
@@ -92,11 +92,12 @@ Pytypegauge can be used as a pre-commit hook. To do this, add the following conf
     -   id: pytypegauge
 
 ```
-The hooks will get all the python files in the repository and check the type coverage of the functions in the files. If there is a README.md file in the repository, the hook will update the file with the type coverage of the repository in a markdown format. you can place a [!typo_progress] and the hook will replace it with the type coverage of the repository.
+The hooks will get all the python files in the repository and check the type coverage of the functions in the files. If there is a `README.md` file in the repository, the hook will update the file with the type coverage of the repository in a markdown format. you can place a [!typo_progress] and the hook will replace it with the type coverage of the repository.
 
-**Note:** - The hook will not update the README.md file if the file is not in the repository.
-          - The hook will not update the README.md file if the file does not contain the [!typo_progress] tag.
-          - The hook will take all python files, there is no method for now to exclude some files from the hook.
+**Note:** 
+- The hook will not update the README.md file if the file is not in the repository.
+- The hook will not update the README.md file if the file does not contain the [!typo_progress] tag.
+- The hook will take all python files, there is no method for now to exclude some files from the hook.
 
 ## TODO:
 
