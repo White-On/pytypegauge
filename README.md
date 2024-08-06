@@ -7,7 +7,7 @@
 **PyTypeGauge** is intended to be used with [pre-commit hooks](https://pre-commit.com/) and can update your `README.md` with your project's type coverage progress.
 
 ## Example Output (current type coverage)
-![typo_progress](https://progress-bar.dev/84/?title=typed&width=150&scale=100&suffix=%)
+![typo_progress](https://geps.dev/progress/84)
 
 For more advanced type checking and validation, consider using other well-maintained libraries such as mypy or pyright.
 
