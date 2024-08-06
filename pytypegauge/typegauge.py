@@ -420,7 +420,7 @@ def get_color_for_percent(total_percent: float) -> str:
     return "green"  # Default color if no range matches
 
 
-def hooks_action(markdown_element: str) -> None:
+def hooks_action(markdown_element: str, mark: str) -> None:
     """
     This function is used to write the markdown element in the README.md file
     """
@@ -435,15 +435,29 @@ def hooks_action(markdown_element: str) -> None:
     # check if there is a ![typo_progress] tag in the README.md file
     if "![typo_progress]" in readme_content:
         # replace the line with [typo_progress] by the markdown_element
-        readme_content = re.sub(
-            r"!\[typo_progress\].*", markdown_element, readme_content
-        )
+        readme_content = re.sub(mark, markdown_element, readme_content)
     else:
         # add the markdown_element at the end of the file
         readme_content += markdown_element
 
     # write the new content in the README.md file
     readme_file.write_text(readme_content)
+
+
+def ascii_progress_bar(progress: float) -> str:
+    """
+    Create an ASCII progress bar.
+
+    Parameters:
+    progress (float): A number between 0 and 1 indicating the progress.
+
+    Returns:
+    str: The ASCII progress bar.
+    """
+    bar_length = 50  # Length of the progress bar
+    block = int(round(bar_length * progress))
+    progress_bar = f"[{'#' * block}{'.' * (bar_length - block)}] {progress * 100:.2f}%"
+    return progress_bar
 
 
 def typegauge(args: argparse.Namespace = None) -> None:
@@ -480,10 +494,21 @@ def typegauge(args: argparse.Namespace = None) -> None:
     color = get_color_for_percent(total_percent)
     output = f"Total percent of typed arguments in all python files: [{color} bold]{total_percent:.2%}[/]"
     if args.markdown_output:
-        markdown_element = f"![typo_progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
+        # old domain
+        # markdown_element = f"![typo_progress](https://progress-bar.dev/{total_percent*100:.0f}/?title=typed&width=150&scale=100&suffix=%)"
+
+        # markdown progress bar with ascii characters
+        # markdown_element = ascii_progress_bar(total_percent)
+
+        # new domain
+        markdown_element = (
+            f"![typo_progress](https://geps.dev/progress/{total_percent*100:.0f})"
+        )
         output = markdown_element
         if args.hooks:
-            hooks_action(markdown_element)
+            # the mark is a component used to dinf the line in the README.md file that will be replaced by the markdown element
+            mark = r"!\[typo_progress\].*"
+            hooks_action(markdown_element, mark)
             return
         print(output)
     if args.clean_output:
