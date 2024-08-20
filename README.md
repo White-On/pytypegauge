@@ -91,11 +91,11 @@ Pytypegauge can be used as a pre-commit hook. To do this, add the following conf
     -   id: pytypegauge
 
 ```
-The hooks will get all the python files in the repository and check the type coverage of the functions in the files. If there is a `README.md` file in the repository, the hook will update the file with the type coverage of the repository in a markdown format. you can place a `[!typo_progress]` and the hook will replace it with the type coverage of the repository.
+The hooks will get all the python files in the repository and check the type coverage of the functions in the files. If there is a `README.md` file in the repository, the hook will update the file with the type coverage of the repository in a markdown format. you can place a `![typo_progress]` and the hook will replace it with the type coverage of the repository.
 
 **Note:** 
 - The hook will not update the README.md file if the file is not in the repository.
-- The hook will not update the README.md file if the file does not contain the `[!typo_progress]` tag.
+- The hook will not update the README.md file if the file does not contain the `![typo_progress]` tag.
 - The hook will take all python files, there is no method for now to exclude some files from the hook.
 
 ## TODO:
