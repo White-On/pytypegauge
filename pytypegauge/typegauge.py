@@ -432,7 +432,7 @@ def hooks_action(markdown_element: str, mark: str) -> None:
         return
     # read the content of the README.md file
     try:
-        readme_content = readme_file.read_text(errors="ignore")
+        readme_content = readme_file.read_text(encoding="utf-8")
     except UnicodeDecodeError:
         logger.error("The README.md file is not in utf-8")
         return
