@@ -431,7 +431,11 @@ def hooks_action(markdown_element: str, mark: str) -> None:
         logger.warning("No README.md file found")
         return
     # read the content of the README.md file
-    readme_content = readme_file.read_text()
+    try:
+        readme_content = readme_file.read_text(errors="ignore")
+    except UnicodeDecodeError:
+        logger.error("The README.md file is not in utf-8")
+        return
     # check if there is a ![typo_progress] tag in the README.md file
     if "![typo_progress]" in readme_content:
         # replace the line with [typo_progress] by the markdown_element
