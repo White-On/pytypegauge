@@ -445,7 +445,7 @@ def hooks_action(markdown_element: str, mark: str) -> None:
         readme_content += markdown_element
 
     # write the new content in the README.md file
-    readme_file.write_text(readme_content)
+    readme_file.write_text(readme_content, encoding="utf-8")
 
 
 def ascii_progress_bar(progress: float) -> str:
