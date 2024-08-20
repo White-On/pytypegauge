@@ -1,8 +1,8 @@
-# ✏️🎚️✅ PyTypeGauge
+# ��🎚�✅ PyTypeGauge
 
 **PyTypeGauge** is a Python library that provides comprehensive statistics and metrics for your typed functions and Python code. The primary goal is to encourage developers to achieve 100% type coverage in their codebases.
 
-**⚠️ Note:** **PyTypeGauge** is a simple tool designed to encourage better type annotation in your Python code. It does not validate the correctness of the types you add. The concept is straightforward: it recursively scans all Python files in a repository, using regular expressions to identify function prototypes and check whether their arguments and return types are annotated. **PyTypeGauge** then calculates the proportion of fully typed functions and arguments, providing a summary of your type coverage. Additionally, you can generate a comprehensive report in markdown format, highlighting functions and files that may need refactoring or additional type annotations.
+**⚠� Note:** **PyTypeGauge** is a simple tool designed to encourage better type annotation in your Python code. It does not validate the correctness of the types you add. The concept is straightforward: it recursively scans all Python files in a repository, using regular expressions to identify function prototypes and check whether their arguments and return types are annotated. **PyTypeGauge** then calculates the proportion of fully typed functions and arguments, providing a summary of your type coverage. Additionally, you can generate a comprehensive report in markdown format, highlighting functions and files that may need refactoring or additional type annotations.
 
 **PyTypeGauge** is intended to be used with [pre-commit hooks](https://pre-commit.com/) and can update your `README.md` with your project's type coverage progress.
 
@@ -41,7 +41,7 @@ typegauge <input>
 
 Replace `<input>` with the path to the directory or Python file you want to analyze.
 
-### ⚙️ Options
+### ⚙� Options
 
 - **-h, --help**: Show the help message and exit.
   ```sh
@@ -80,7 +80,7 @@ Replace `<input>` with the path to the directory or Python file you want to anal
 
 By using these options, you can tailor the output of `typegauge` to suit your needs, whether you want a quick summary, a detailed report, or integration with other tools.
 
-## 🪝 Hooks
+## � Hooks
 
 Pytypegauge can be used as a pre-commit hook. To do this, add the following configuration to your `.pre-commit-config.yaml` file:
 
