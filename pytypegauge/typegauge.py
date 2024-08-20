@@ -439,7 +439,7 @@ def hooks_action(markdown_element: str, mark: str) -> None:
     # check if there is a ![typo_progress] tag in the README.md file
     if "![typo_progress]" in readme_content:
         # replace the line with [typo_progress] by the markdown_element
-        readme_content = re.sub(mark, markdown_element, readme_content)
+        readme_content = re.sub(mark, markdown_element, readme_content, count=1)
     else:
         # add the markdown_element at the end of the file
         readme_content += markdown_element
